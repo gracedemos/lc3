@@ -118,6 +118,7 @@ void Instructions::trap(std::vector<uint16_t> &memory, Registers* registers) {
             break;
         case TRAP_HALT:
             std::cout << "\n[LC3]: Emulator halted\n";
+            dumpRegisters(registers);
             std::exit(0);
         default:
             std::cerr << "Error [pc = 0x" << std::hex << registers->pc << "]: Invalid or unimplemented trap vector\n";
@@ -173,9 +174,7 @@ void Instructions::br(Registers* registers, Flags* flags) {
     uint8_t nzp = (flags->n << 2) | (flags->z << 1) | flags->p;
     int9 offset = {registers->ir & BR_OFFSET_MASK};
 
-    if (br_nzp & nzp) {
-        registers->pc += offset.val;
-    } else if (br_nzp == 0) {
+    if (br_nzp & nzp || br_nzp == 0) {
         registers->pc += offset.val;
     }
 }
@@ -211,4 +210,42 @@ void Instructions::lc3_not(Registers* registers, Flags* flags) {
     uint16_t result = ~getRegister(registers, sr);
     setRegister(registers, dr, result);
     setFlags(flags, static_cast<int16_t>(result));
+}
+
+void Instructions::ldi(std::vector<uint16_t> &memory, Registers* registers, Flags* flags) {
+    uint8_t dr = (registers->ir & LDI_DR_MASK) >> 9;
+    int9 offset = {registers->ir & LDI_OFFSET_MASK};
+
+    uint16_t address = registers->pc + offset.val;
+    uint16_t ptr = memory[address];
+    setRegister(registers, dr, memory[ptr]);
+    setFlags(flags, static_cast<int16_t>(memory[ptr]));
+}
+
+void Instructions::ldr(std::vector<uint16_t> &memory, Registers* registers, Flags* flags) {
+    uint8_t dr = (registers->ir & LDR_DR_MASK) >> 9;
+    uint8_t reg = (registers->ir & LDR_REG_MASK) >> 6;
+    int6 offset = {registers->ir & LDR_OFFSET_MASK};
+
+    uint16_t address = getRegister(registers, reg) + offset.val;
+    setRegister(registers, dr, memory[address]);
+    setFlags(flags, static_cast<int16_t>(memory[address]));
+}
+
+void Instructions::sti(std::vector<uint16_t> &memory, Registers* registers) {
+    uint8_t sr = (registers->ir & STI_SR_MASK) >> 9;
+    int9 offset = {registers->ir & STI_OFFSET_MASK};
+
+    uint16_t address = registers->pc + offset.val;
+    uint16_t ptr = memory[address];
+    memory[ptr] = getRegister(registers, sr);
+}
+
+void Instructions::str(std::vector<uint16_t> &memory, Registers* registers) {
+    uint8_t sr = (registers->ir & STR_SR_MASK) >> 9;
+    uint8_t reg = (registers->ir & STR_REG_MASK) >> 6;
+    int6 offset = {registers->ir & STR_OFFSET_MASK};
+
+    uint16_t address = getRegister(registers, reg) + offset.val;
+    memory[address] = getRegister(registers, sr);
 }

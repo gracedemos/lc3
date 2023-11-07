@@ -10,4 +10,5 @@ add_executable(lc3 src/main.cpp
         src/Instructions.cpp
         src/Instructions.h
         src/utils.h
+        src/utils.cpp
 )

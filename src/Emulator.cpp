@@ -65,6 +65,12 @@ void Emulator::execute() {
         case LD_OPCODE:
             Instructions::ld(memory, &registers, &flags);
             break;
+        case LDI_OPCODE:
+            Instructions::ldi(memory, &registers, &flags);
+            break;
+        case LDR_OPCODE:
+            Instructions::ldr(memory, &registers, &flags);
+            break;
         case LEA_OPCODE:
             Instructions::lea(&registers);
             break;
@@ -73,6 +79,12 @@ void Emulator::execute() {
             break;
         case ST_OPCODE:
             Instructions::st(memory, &registers);
+            break;
+        case STI_OPCODE:
+            Instructions::sti(memory, &registers);
+            break;
+        case STR_OPCODE:
+            Instructions::str(memory, &registers);
             break;
         case TRAP_OPCODE:
             Instructions::trap(memory, &registers);

@@ -47,6 +47,13 @@
 #define LD_DR_MASK 0x0e00
 #define LD_OFFSET_MASK 0x01ff
 
+#define LDI_DR_MASK 0x0e00
+#define LDI_OFFSET_MASK 0x01ff
+
+#define LDR_DR_MASK 0x0e00
+#define LDR_REG_MASK 0x01c0
+#define LDR_OFFSET_MASK 0x003f
+
 #define LEA_DR_MASK 0x0e00
 #define LEA_OFFSET_MASK 0x01ff
 
@@ -55,6 +62,13 @@
 
 #define ST_SR_MASK 0x0e00
 #define ST_OFFSET_MASK 0x01ff
+
+#define STI_SR_MASK 0x0e00
+#define STI_OFFSET_MASK 0x01ff
+
+#define STR_SR_MASK 0x0e00
+#define STR_REG_MASK 0x01c0
+#define STR_OFFSET_MASK 0x003f
 
 #define TRAP_VEC_MASK 0x00ff
 #define TRAP_GETC 0x20
@@ -75,9 +89,13 @@ public:
     static void jmp(Registers* registers);
     static void jsr(Registers* registers);
     static void ld(std::vector<uint16_t> &memory, Registers* registers, Flags* flags);
+    static void ldi(std::vector<uint16_t> &memory, Registers* registers, Flags* flags);
+    static void ldr(std::vector<uint16_t> &memory, Registers* registers, Flags* flags);
     static void lea(Registers* registers);
     static void lc3_not(Registers* registers, Flags* flags);
     static void st(std::vector<uint16_t> &memory, Registers* registers);
+    static void sti(std::vector<uint16_t> &memory, Registers* registers);
+    static void str(std::vector<uint16_t> &memory, Registers* registers);
     static void trap(std::vector<uint16_t> &memory, Registers* registers);
 };
 
